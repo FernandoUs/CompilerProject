@@ -1,0 +1,66 @@
+Program     ::= "#include" "<" id "." "h" ">" (Func | VarDecl)* Main // o del medio es para las variables globales si no se requiere
+// solo poner (Func)* y ya 
+
+Main        ::= "int" "main" "(" ")" Block // diria que toquemos la gramtica aqui permite stms que son fors y dmeas nose siento
+// que toda la gratica esta mal ya que tienes que distanciasr tipos y operaciones talvez asi seria mas facil como una modular nose nose de momento 
+// estoy aqui
+
+Func        ::= FunctionType id "(" ParamList ")" Block
+
+FunctionType ::= Type | "void"
+
+ParamList   ::= ε
+              | Param ( "," Param )*
+
+Param       ::= Type id
+
+Block       ::= "{" VarDeclList StmtList ["return" [Exp] ";"] "}"
+
+VarDeclList ::= (VarDecl)*
+
+VarDecl     ::= Type VarList ";"
+
+Type        ::= [Signedness] BaseType // haz la logica porque no l se muy bien, creo que admite mas cosas como combinaciones pero
+// podemos solucionarlo en el typechecker la verdad
+
+Signedness  ::= "unsigned"
+BaseType    ::= "int" | "long" | "bool" | "char" | "float" | "double"
+
+VarList     ::= VarItem ("," VarItem)*
+VarItem     ::= id ["=" Exp]
+
+StmtList    ::= (Stmt)*
+
+Stmt        ::= Assign ";"
+              | "printf" "(" String "," ArgList ")" ";"
+              | "if" "(" CExp ")" Stmt ["else" Stmt] // no implementamos el for while if con una sola sentencia no??
+              | "while" "(" CExp ")" Stmt // ejm: if(c>0) x = 5; no hay llaves no hay nada JAJSSJ pero en c esta asi se puede o podemos hacer??
+              | "for" "(" ForInit ";" CExp ";" Assign ")" Stmt  // esto esta mal xd porque podrias hacer esto (2*3) + true < False, nose se c te permite eso
+              | "return" [Exp] ";"
+              | FuncCall ";"
+              | Block
+
+ForInit     ::= VarDecl | Assign | ε
+Assign      ::= id "=" Exp
+FuncCall    ::= id "(" ArgList ")"
+
+ArgList     ::= ε
+              | Exp ( "," Exp )*
+
+CExp        ::= LogicalOr
+LogicalOr   ::= LogicalAnd ("||" LogicalAnd)*
+LogicalAnd  ::= Equality ("&&" Equality)*
+Equality    ::= Relational (("==" | "!=") Relational)*
+Relational  ::= Additive (("<" | "<=" | ">" | ">=") Additive)*
+Additive    ::= Multiplicative (("+" | "-") Multiplicative)*
+Multiplicative ::= Unary (("*" | "/" | "%") Unary)*
+Unary       ::= ("+" | "-" | "!") Unary | Primary
+Primary     ::= id | Num | Bool | String | "(" CExp ")" | FuncCall
+
+Bool        ::= "true" | "false"
+String      ::= "\"" [^"]* "\""
+Num         ::= [0-9]+
+id          ::= [a-zA-Z_][a-zA-Z0-9_]*
+
+// consultar si quieres la implementacion sin llaves o con llaves para mas facilidad?? 
+// R: Con llaves es más fácil para el parser y más claro para el programador
