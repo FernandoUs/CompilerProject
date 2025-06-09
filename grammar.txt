@@ -15,7 +15,6 @@ Type        ::= bool
               | SignedIntType
 
 SignedIntType ::= [unsigned] BaseIntType // creo que aaqui puede romper con LL1 consultar al profesor mñn
-                | unsigned
 
 BaseIntType  ::= int
                | long [int]
@@ -36,9 +35,7 @@ CExp       ::= Exp ( ("<" | "<=" | "==" | ">" | ">=" | "!=") Exp )*
 
 Exp        ::= Term (("+" | "-") Term)*
 
-Term       ::= Postfix (("*" | "/") Postfix)*
-
-Postfix    ::= Factor ( "++" | "--" )?
+Term       ::= Factor (("*" | "/") Factor)*
 
 Factor     ::= id
              | Num
@@ -56,9 +53,7 @@ Stmt       ::= id = CExp ;
 
 Assign     ::= id = CExp
 
-AssignExpr ::= id "=" CExp
-             | id "+=" CExp
-             | id "-=" CExp
+AssignExpr ::= id "+=" CExp | id "++" 
 
 
 Main        ::= int main () { (VarDec)* (Stmt)* } 
