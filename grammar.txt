@@ -52,7 +52,7 @@ Stmt       ::= AssignExpr;
              | for (Assign, CExp, AssignExpr) {Body}
              | return CExp ;
 
-Assign     ::= int id = CExp
+Assign     ::= int id = CExp // aqui cambialo a type si deseas 
 
 AssignExpr ::= id "=" CExp
              | id "+=" CExp
