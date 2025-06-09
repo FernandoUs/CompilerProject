@@ -37,24 +37,28 @@ Exp        ::= Term (("+" | "-") Term)*
 
 Term       ::= Factor (("*" | "/") Factor)*
 
-Factor     ::= id
+Factor     ::= id [++|--]
              | Num
              | Bool
-             | "(" CExp ")"
+             | "(" CExp ")" 
 
 Bool       ::= "true" | "false"
 
-Stmt       ::= id = CExp ;
+Stmt       ::= AssignExpr;
+             | 
              | printf ("%d[String]\n", Factor)
              | if (CExp) { Body [else { Body }] } 
              | while (CExp) { Body }
-             | for (Assign, CExp, AssignExpr)
+             | for (Assign, CExp, AssignExpr) {Body}
              | return CExp ;
 
-Assign     ::= id = CExp
+Assign     ::= int id = CExp
 
-AssignExpr ::= id "+=" CExp | id "++" 
-
+AssignExpr ::= id "=" CExp
+             | id "+=" CExp
+             | id "-=" CExp
+             | id++
+             | id--
 
 Main        ::= int main () { (VarDec)* (Stmt)* } 
 
