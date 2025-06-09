@@ -1,97 +1,66 @@
-Program     ::= #include<main> (FuncList | VarDeclList)*  Main // o del medio es para las variables globales si no se requiere
-// solo poner (FuncList)* y ya 
+// esta en uenfi y el [] significa opcional 
 
-Main        ::= int main () { VarDeclList StmtList [return 0;] } // diria que toquemos la gramtica aqui permite stms que son fors y dmeas nose siento
-// que toda la gratica esta mal ya que tienes que distanciasr tipos y operaciones talvex asi seria mas facil como una modular nose nose de momento 
-// estoy aqui
+Program     ::=  #include<stdio.h> (Include)* (Func)* Main
 
-FuncList    ::= (Func)*
+Include     ::=  #include<Libraries> 
 
-Func        ::= function id ( ParamList ) : Type { Body }
+Libraries   ::= gaa.h | etc etc
 
-function    ::= type | void
+Func        ::= Function id ( ParamList ) { Body }
+
+function    ::= Type 
+                | void
+
+Type        ::= bool
+              | SignedIntType
+
+SignedIntType ::= [unsigned] BaseIntType // creo que aaqui puede romper con LL1 consultar al profesor mñn
+                | unsigned
+
+BaseIntType  ::= int
+               | long [int]
 
 ParamList   ::= ε
               | Param ( , Param )*
 
 Param       ::= type id
 
-Body        ::= VarDeclList StmtList
+Body        ::= (VarDec)* (Stmt)*
 
-VarDeclList ::= (VarDec)*
 
 VarDec      ::= Type VarList ;
 
-type        ::= bool | int | long int | unsigned int | usnigned long int // haz la laogica porque no l se muy bien, creo que admite mas cosas como combinaciones pero
-// podemos solucionarlo en el typechecker la verdad
+VarList    ::= id [= CExp] (, id [= CExp])*
+
+CExp       ::= Exp ( ("<" | "<=" | "==" | ">" | ">=" | "!=") Exp )*
+
+Exp        ::= Term (("+" | "-") Term)*
+
+Term       ::= Postfix (("*" | "/") Postfix)*
+
+Postfix    ::= Factor ( "++" | "--" )?
+
+Factor     ::= id
+             | Num
+             | Bool
+             | "(" CExp ")"
+
+Bool       ::= "true" | "false"
+
+Stmt       ::= id = CExp ;
+             | printf ("%d[String]\n", Factor)
+             | if (CExp) { Body [else { Body }] } 
+             | while (CExp) { Body }
+             | for (Assign, CExp, AssignExpr)
+             | return CExp ;
+
+Assign     ::= id = CExp
+
+AssignExpr ::= id "=" CExp
+             | id "+=" CExp
+             | id "-=" CExp
 
 
-VarList     ::= id (, id)*
+Main        ::= int main () { (VarDec)* (Stmt)* } 
 
-StmtList    ::= Stmt ( ; Stmt )*
-
-Stmt        ::= id = CExp
-              | printf ("%d\n", Factor)
-              | if (CExp) : { Body [else : { Body }] } // no impleemntamos el for while if con una sola sentencia no??
-              | while (CExp) { Body } // ejm: if(c>0) x = 5; no hay llaves no hay nada JAJSSJ pero en c estaa asi s epuede o podmeos hacer??
-              | for (int id = Num , CExp , CExp)  // esto esta mal xd porque podrias hacer esto (2*3) + true < False, nose se c te permite eso
-              | return Factor;
-
-ArgList     ::= ε
-              | CExp ( , CExp )*
-
-CExp        ::= Exp ( < | <= | == ) Exp
-
-Exp         ::= Term ( + | - Term )*
-
-Term        ::= Factor ( * | / Factor )*
-
-Factor      ::= id
-              | Num
-              | Bool
-              | ( Exp )
-
-Bool        ::= true | false
-
-
-///////////////////////////77 gpt mejoras 
-
-
-Program     ::= #include<...> (Func | VarDec)* Main // la misma wbd
-
-Main        ::= int main ( ) { VarDeclList StmtList [return 0 ;] }
-
-Func        ::= Function id ( ParamList ) { VarDeclList StmtList }
-
-Function ::= Type | void
-
-ParamList   ::= ε | Param ( , Param )*
-Param       ::= Type id
-
-VarDeclList ::= (VarDec)*
-VarDec      ::= Type VarList ;
-VarList     ::= id ( , id )*
-
-Type        ::= Signedness BaseType
-Signedness  ::= ε | unsigned
-BaseType    ::= int | long int | bool | logn // aqui aceptas logn solito como hcemos??
-
-StmtList    ::= (Stmt)*
-
-Stmt        ::= id = Exp ; // consultar si quieres la implementacion sin llaves o con llaves para mas facilidad?? 
-             | printf ( "%d\n" , Exp ) ;
-             | return Exp ;
-             | if ( CExp ) Stmt [ else Stmt ]
-             | while ( CExp ) Stmt
-             | for ( Assign ; CExp ; Assign ) Stmt
-             | id ( ArgList ) ;
-
-Assign      ::= id = Exp
-ArgList     ::= ε | Exp ( , Exp )*
-
-CExp        ::= Exp ( < | <= | == ) Exp
-Exp         ::= Term ( + | - Term )*
-Term        ::= Factor ( * | / Factor )*
-Factor      ::= id | Num | Bool | ( Exp )
-Bool        ::= true | false
 
